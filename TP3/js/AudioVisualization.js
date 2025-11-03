@@ -21,6 +21,7 @@ class AudioVisualization {
     }
   }
 
+  // Método abstrato
   draw() {
     throw new Error("Método draw() deve ser implementado pela subclasse.");
   }

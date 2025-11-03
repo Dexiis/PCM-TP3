@@ -10,11 +10,16 @@ class AudioProcessor {
   }
 
   async startMicrophone() {
+    const audioCtx = new AudioContext();
     console.log("Iniciando captura do microfone...");
     return new Promise((resolve, reject) => {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
+          this.mediaStream = audioCtx.createMediaStreamSource(stream);
+          this.analyser = audioCtx.createAnalyser();
+          this.mediaStream.connect(this.analyser);
+          this.analyser.connect(audioCtx.destination);
           resolve("Microfone ativado com sucesso");
         })
         .catch((error) => {
@@ -30,7 +35,9 @@ class AudioProcessor {
   }
 
   stop() {
-    // TODO: parar processamento de áudio
+    // TODO: finish still
+    this.mediaStream = null;
+
     console.log("Parando processamento de áudio...");
   }
 
@@ -39,17 +46,16 @@ class AudioProcessor {
   }
 
   getFrequencyData() {
-    // TODO: obter dados de frequência
+    this.frequencyData = this.analyser.getByteFrequencyData();
     return this.frequencyData;
   }
 
   getWaveformData() {
-    // TODO: obter dados de forma de onda
+    this.waveformData = this.analyser.getByteTimeDomainData();
     return this.waveformData;
   }
 
   calculateAudioLevel() {
-    // TODO: calcular nível de áudio
     return 0;
   }
 }
