@@ -14,6 +14,9 @@ class VisualizationEngine {
 
   initVisualizations() {
     // TODO: inicializar tipos de visualização
+    this.setVisualization("spectrum");
+    this.start();
+
     this.visualizations.set(
       "spectrum",
       new SpectrumVisualization(this.canvas, null)
@@ -29,13 +32,12 @@ class VisualizationEngine {
   }
 
   setVisualization(type) {
-    // TODO: definir visualização atual
+    this.currentVisualization = this.visualizations.get(type);
     console.log(`Definindo visualização: ${type}`);
-    return false; // Devolver boolean indicando sucesso
+    return type != null; // Devolver boolean indicando sucesso
   }
 
   start() {
-    // TODO: iniciar animação
     console.log("Iniciando motor de visualização...");
   }
 

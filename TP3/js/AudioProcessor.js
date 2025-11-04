@@ -18,6 +18,7 @@ class AudioProcessor {
         .then((stream) => {
           this.mediaStream = audioCtx.createMediaStreamSource(stream);
           this.analyser = audioCtx.createAnalyser();
+          this.analyser.fftSize = 2048;
           this.mediaStream.connect(this.analyser);
           this.analyser.connect(audioCtx.destination);
           resolve("Microfone ativado com sucesso");
@@ -46,16 +47,17 @@ class AudioProcessor {
   }
 
   getFrequencyData() {
-    this.frequencyData = this.analyser.getByteFrequencyData();
+    this.analyser.getByteFrequencyData(this.frequencyData);
     return this.frequencyData;
   }
 
   getWaveformData() {
-    this.waveformData = this.analyser.getByteTimeDomainData();
+    this.analyser.getByteTimeDomainData(this.waveformData);
     return this.waveformData;
   }
 
   calculateAudioLevel() {
+    console.log(this.waveformData[127]);
     return 0;
   }
 }

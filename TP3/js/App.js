@@ -25,14 +25,16 @@ class App {
 
   startMicrophone() {
     this.uiManager.setButtonStates(true);
-    this.audioProcessor.startMicrophone()
-    .then((stream) => {
-      this.visualizationEngine.start();
-    })
-    .catch((error) => {
-      this.uiManager.updateAudioInfo(error, true);
-      this.uiManager.setButtonStates(false);
-    });
+    this.audioProcessor
+      .startMicrophone()
+      .then((stream) => {
+        this.visualizationEngine.start();
+        console.log(this.audioProcessor.calculateAudioLevel());
+      })
+      .catch((error) => {
+        this.uiManager.updateAudioInfo(error, true);
+        this.uiManager.setButtonStates(false);
+      });
 
     console.log("Iniciando microfone...");
   }
