@@ -10,7 +10,10 @@ $(document).ready(function () {
 class App {
   constructor() {
     this.audioProcessor = new AudioProcessor();
-    this.visualizationEngine = new VisualizationEngine("audioCanvas");
+    this.visualizationEngine = new VisualizationEngine(
+      "audioCanvas",
+      this.audioProcessor
+    );
     this.uiManager = new UIManager(this);
     this.exportManager = new ExportManager(this.visualizationEngine);
 
@@ -48,6 +51,7 @@ class App {
     this.uiManager.setButtonStates(false);
     // TODO: parar áudio
     console.log("Parando áudio...");
+    this.visualizationEngine.stop();
   }
 
   setVisualization(type) {

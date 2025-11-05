@@ -1,12 +1,13 @@
 // Motor de Visualização
 class VisualizationEngine {
-  constructor(canvasId) {
+  constructor(canvasId, audioProcessor) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext("2d");
     this.visualizations = new Map();
     this.currentVisualization = null;
     this.animationId = null;
     this.isRunning = false;
+    this.audioProcessor = audioProcessor;
 
     // Inicializar visualizações
     this.initVisualizations();
@@ -14,35 +15,46 @@ class VisualizationEngine {
 
   initVisualizations() {
     // TODO: inicializar tipos de visualização
-    this.setVisualization("spectrum");
-    this.start();
 
     this.visualizations.set(
       "spectrum",
-      new SpectrumVisualization(this.canvas, null)
+      new SpectrumVisualization(this.canvas, this.audioProcessor)
     );
     this.visualizations.set(
       "waveform",
-      new WaveformVisualization(this.canvas, null)
+      new WaveformVisualization(this.canvas, this.audioProcessor)
     );
     this.visualizations.set(
       "particles",
-      new ParticleVisualization(this.canvas, null)
+      new ParticleVisualization(this.canvas, this.audioProcessor)
     );
   }
 
   setVisualization(type) {
     this.currentVisualization = this.visualizations.get(type);
     console.log(`Definindo visualização: ${type}`);
-    return type != null; // Devolver boolean indicando sucesso
+    return this.currentVisualization; // Devolver boolean indicando sucesso
   }
 
   start() {
+    this.initVisualizations();
+    this.setVisualization("spectrum");
+    console.log(this.currentVisualization);
+    this.animationId = requestAnimationFrame(() =>
+      this.currentVisualization.update()
+    );
+
     console.log("Iniciando motor de visualização...");
   }
 
   stop() {
     // TODO: parar animação
+    console.log(this.animationId);
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+
     console.log("Parando motor de visualização...");
   }
 

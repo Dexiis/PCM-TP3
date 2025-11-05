@@ -28,6 +28,9 @@ class AudioVisualization {
 
   update() {
     // TODO: atualizar estado da visualização
+    requestAnimationFrame(() => this.update());
+    this.draw();
+    console.log("update");
     this.frameCount++;
   }
 
