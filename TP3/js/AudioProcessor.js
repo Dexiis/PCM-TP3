@@ -21,7 +21,7 @@ class AudioProcessor {
           this.analyser = audioCtx.createAnalyser();
           this.analyser.fftSize = 2048;
           this.mediaStream.connect(this.analyser);
-          this.analyser.connect(audioCtx.destination);
+          //this.analyser.connect(audioCtx.destination);
           this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
           this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
           resolve("Microfone ativado com sucesso");

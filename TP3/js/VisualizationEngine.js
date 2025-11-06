@@ -11,6 +11,7 @@ class VisualizationEngine {
 
     // Inicializar visualizações
     this.initVisualizations();
+    this.setVisualization("spectrum");
   }
 
   initVisualizations() {
@@ -37,8 +38,7 @@ class VisualizationEngine {
   }
 
   start() {
-    this.initVisualizations();
-    this.setVisualization("spectrum");
+    
     console.log(this.currentVisualization);
     this.animationId = requestAnimationFrame(() =>
       this.currentVisualization.update()
