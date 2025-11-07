@@ -16,8 +16,6 @@ class SpectrumVisualization extends AudioVisualization {
       : this.testData;
     const barWidth = this.canvas.width / data.length;
 
-    console.log(this.audioProcessor.getFrequencyData());
-
     for (let i = 0; i < data.length; i++) {
       const barHeight = (data[i] / 255) * this.canvas.height;
       const x = i * barWidth;

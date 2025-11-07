@@ -1,6 +1,7 @@
 // Processamento de Áudio
 class AudioProcessor {
-  constructor() {
+  constructor(app) {
+    this.app = app;
     this.audioContext = null;
     this.analyser = null;
     this.mediaStream = null;
@@ -21,7 +22,7 @@ class AudioProcessor {
           this.analyser = audioCtx.createAnalyser();
           this.analyser.fftSize = 2048;
           this.mediaStream.connect(this.analyser);
-          //this.analyser.connect(audioCtx.destination);
+          //this.analyser.connect(audioCtx.destination); APENAS ATIVAR PARA OUVIR
           this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
           this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
           resolve("Microfone ativado com sucesso");
@@ -39,28 +40,32 @@ class AudioProcessor {
   }
 
   stop() {
-    // TODO: finish still
     this.mediaStream = null;
+    this.app.updateUIInfo();
 
     console.log("Parando processamento de áudio...");
   }
 
   update() {
-    // TODO: atualizar dados de áudio
+    this.analyser.getByteFrequencyData(this.frequencyData);
+    this.analyser.getByteTimeDomainData(this.waveformData);
+    this.calculateAudioLevel();
+    this.app.updateUIInfo();
   }
 
   getFrequencyData() {
-    this.analyser.getByteFrequencyData(this.frequencyData);
     return this.frequencyData;
   }
 
   getWaveformData() {
-    this.analyser.getByteTimeDomainData(this.waveformData);
     return this.waveformData;
   }
 
   calculateAudioLevel() {
-    console.log(this.waveformData[127]);
-    return this.waveformData[127];
+    let audioLevel = this.getWaveformData().slice(-1)[0];
+    audioLevel = audioLevel - 128;
+    audioLevel = (audioLevel * 100) / 128;
+    audioLevel = Math.abs(audioLevel);
+    return audioLevel;
   }
 }

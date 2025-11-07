@@ -32,30 +32,35 @@ class VisualizationEngine {
   }
 
   setVisualization(type) {
+    this.currentVisualization = null;
     this.currentVisualization = this.visualizations.get(type);
+    console.log(this.currentVisualization);
     console.log(`Definindo visualização: ${type}`);
     return this.currentVisualization; // Devolver boolean indicando sucesso
   }
 
   start() {
-    
-    console.log(this.currentVisualization);
-    this.animationId = requestAnimationFrame(() =>
-      this.currentVisualization.update()
-    );
-
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.animationId = requestAnimationFrame(() => this.updateLoop());
     console.log("Iniciando motor de visualização...");
   }
 
   stop() {
-    // TODO: parar animação
-    console.log(this.animationId);
+    this.isRunning = false;
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
+      this.audioProcessor.stop();
     }
-
+    this.currentVisualization.clearCanvas();
     console.log("Parando motor de visualização...");
+  }
+
+  updateLoop() {
+    if (!this.isRunning) return;
+    this.animationId = requestAnimationFrame(() => this.updateLoop());
+    this.currentVisualization.update();
   }
 
   resize() {

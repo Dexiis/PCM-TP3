@@ -47,7 +47,7 @@ class ParticleVisualization extends AudioVisualization {
       ? this.audioProcessor.getFrequencyData()
       : this.testData;
     const audioLevel = this.audioProcessor
-      ? this.audioProcessor.calculateAudioLevel()
+      ? this.audioProcessor.calculateAudioLevel() / 100
       : 0.5;
 
     for (let i = 0; i < this.particles.length; i++) {

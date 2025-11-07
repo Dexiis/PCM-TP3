@@ -9,7 +9,7 @@ $(document).ready(function () {
 
 class App {
   constructor() {
-    this.audioProcessor = new AudioProcessor();
+    this.audioProcessor = new AudioProcessor(this);
     this.visualizationEngine = new VisualizationEngine(
       "audioCanvas",
       this.audioProcessor
@@ -32,7 +32,6 @@ class App {
       .startMicrophone()
       .then((stream) => {
         this.visualizationEngine.start();
-        console.log(this.audioProcessor.calculateAudioLevel());
       })
       .catch((error) => {
         this.uiManager.updateAudioInfo(error, true);
@@ -56,6 +55,7 @@ class App {
 
   setVisualization(type) {
     // TODO: definir tipo de visualização
+    this.visualizationEngine.setVisualization(type);
     console.log(`Definindo visualização: ${type}`);
   }
 
@@ -67,5 +67,13 @@ class App {
   destroy() {
     // TODO: limpar recursos
     console.log("Destruindo aplicação...");
+  }
+
+  updateUIInfo() {
+    let info = {
+      level: parseInt(this.audioProcessor.calculateAudioLevel()),
+      status: this.visualizationEngine.isRunning ? "Ativo" : "Parado",
+    };
+    this.uiManager.updateAudioInfo(info, false);
   }
 }
