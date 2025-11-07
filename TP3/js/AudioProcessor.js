@@ -8,7 +8,6 @@ class AudioProcessor {
     this.frequencyData = null;
     this.waveformData = null;
     this.isPlaying = false;
-    this.stream = null;
   }
 
   async startMicrophone() {
@@ -18,15 +17,15 @@ class AudioProcessor {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          this.stream = stream;
           this.audioContext = audioCtx;
-          this.mediaStream = audioCtx.createMediaStreamSource(stream);
+          const mediaSource = audioCtx.createMediaStreamSource(stream);
           this.analyser = audioCtx.createAnalyser();
           this.analyser.fftSize = 2048;
-          this.mediaStream.connect(this.analyser);
+          mediaSource.connect(this.analyser);
           //this.analyser.connect(audioCtx.destination); APENAS ATIVAR PARA OUVIR
           this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
           this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
+          this.mediaStream = stream;
           resolve("Microfone ativado com sucesso");
         })
         .catch((error) => {
@@ -42,7 +41,8 @@ class AudioProcessor {
   }
 
   stop() {
-    if (this.stream) this.stream.getTracks().forEach((track) => track.stop());
+    if (this.mediaStream)
+      this.mediaStream.getTracks().forEach((track) => track.stop());
     this.app.updateUIInfo();
 
     console.log("Parando processamento de áudio...");
