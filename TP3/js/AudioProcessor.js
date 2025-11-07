@@ -8,6 +8,7 @@ class AudioProcessor {
     this.frequencyData = null;
     this.waveformData = null;
     this.isPlaying = false;
+    this.stream = null;
   }
 
   async startMicrophone() {
@@ -17,6 +18,7 @@ class AudioProcessor {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
+          this.stream = stream;
           this.audioContext = audioCtx;
           this.mediaStream = audioCtx.createMediaStreamSource(stream);
           this.analyser = audioCtx.createAnalyser();
@@ -40,7 +42,7 @@ class AudioProcessor {
   }
 
   stop() {
-    this.mediaStream = null;
+    if (this.stream) this.stream.getTracks().forEach((track) => track.stop());
     this.app.updateUIInfo();
 
     console.log("Parando processamento de áudio...");
