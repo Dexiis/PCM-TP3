@@ -36,7 +36,7 @@ class ParticleVisualization extends AudioVisualization {
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2,
         radius: Math.random() * 3 + 1,
-        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+        color: `rgba(0, 0, 255)`,
       });
     }
   }
@@ -108,8 +108,8 @@ class ParticleVisualization extends AudioVisualization {
           this.ctx.beginPath();
           this.ctx.moveTo(p1.x, p1.y);
           this.ctx.lineTo(p2.x, p2.y);
-          this.ctx.strokeStyle = `rgba(76, 201, 240, ${opacity * 0.5})`;
-          this.ctx.lineWidth = 1;
+          this.ctx.strokeStyle = `rgba(76, 201, 240, ${opacity * 0.8})`;
+          this.ctx.lineWidth = 0.3;
           this.ctx.stroke();
         }
       }

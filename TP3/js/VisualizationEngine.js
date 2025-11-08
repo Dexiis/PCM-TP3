@@ -63,9 +63,7 @@ class VisualizationEngine {
     this.currentVisualization.update();
   }
 
-  resize() {
-    // TODO: redimensionar canvas
-  }
+  resize() {}
 
   getVisualizationProperties() {
     // TODO: obter propriedades da visualização atual
