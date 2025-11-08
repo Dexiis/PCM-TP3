@@ -63,6 +63,9 @@ class UIManager {
     // TODO: configurar event listeners
     $("#startMic").on("click", () => this.app.startMicrophone());
     $("#stopAudio").on("click", () => app.stopAudio());
+    $("#fullscreenButton").on("click", () =>
+      this.visualizationEngine.fullscreen()
+    );
 
     document.getElementById("audioFile").addEventListener("change", (e) => {
       if (e.target.files.length > 0) {

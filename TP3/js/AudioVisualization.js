@@ -29,8 +29,9 @@ class AudioVisualization {
   update() {
     // TODO: atualizar estado da visualização
     this.draw();
-    this.audioProcessor.update();
     this.frameCount++;
+    this.audioProcessor.update();
+    if (this.frameCount % 5 === 0) this.audioProcessor.updateUI();
   }
 
   resize(width, height) {

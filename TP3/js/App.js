@@ -42,7 +42,14 @@ class App {
   }
 
   loadAudioFile(file) {
-    // TODO: carregar ficheiro de áudio
+    this.audioProcessor
+      .loadAudioFile()
+      .then((stream) => {
+        this.visualizationEngine.start();
+      })
+      .catch((error) => {
+        this.uiManager.updateAudioInfo(error, true);
+      });
     console.log("Carregando ficheiro de áudio...");
   }
 

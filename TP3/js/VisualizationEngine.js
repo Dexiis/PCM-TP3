@@ -65,6 +65,12 @@ class VisualizationEngine {
 
   resize() {}
 
+  fullscreen() {
+    this.canvas.requestFullscreen().catch((error) => {
+      console.error(`${error.message}`);
+    });
+  }
+
   getVisualizationProperties() {
     // TODO: obter propriedades da visualização atual
     return {};

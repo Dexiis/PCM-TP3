@@ -37,6 +37,26 @@ class AudioProcessor {
   async loadAudioFile(file) {
     // TODO: carregar ficheiro de áudio
     console.log("Carregando ficheiro de áudio...");
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+        .then((stream) => {
+          reader.onload = async (e) => {
+            const audioData = e.target.result;
+            const audioBuffer = await this.audioContext.decodeAudioData(
+              audioData
+            );
+            const source = this.audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            resolve("Ficheiro carregado com sucesso");
+          };
+        })
+        .catch((error) => {
+          reject(`Erro ao carregar o ficheiro de áudio: ${error.message}`);
+        });
+      reader.readAsArrayBuffer(file);
+    });
+
     // Devolver Promise
   }
 
@@ -52,6 +72,9 @@ class AudioProcessor {
     this.analyser.getByteFrequencyData(this.frequencyData);
     this.analyser.getByteTimeDomainData(this.waveformData);
     this.calculateAudioLevel();
+  }
+
+  updateUI() {
     this.app.updateUIInfo();
   }
 
