@@ -1,4 +1,3 @@
-// Classe principal da aplicação
 // Inicialização da aplicação quando o DOM estiver carregado
 $(document).ready(function () {
   const app = new App();
@@ -7,6 +6,7 @@ $(document).ready(function () {
   window.app = app;
 });
 
+// Classe principal da aplicação
 class App {
   constructor() {
     this.audioProcessor = new AudioProcessor(this);
@@ -22,7 +22,6 @@ class App {
   }
 
   init() {
-    // TODO: inicializar a aplicação
     console.log("App inicializada");
   }
 
@@ -42,28 +41,25 @@ class App {
   }
 
   loadAudioFile(file) {
-    this.audioProcessor
-      .loadAudioFile()
-      .then((stream) => {
-        this.visualizationEngine.start();
-      })
-      .catch((error) => {
-        this.uiManager.updateAudioInfo(error, true);
-      });
+    // FAZER ESSE MAMBO
     console.log("Carregando ficheiro de áudio...");
   }
 
   stopAudio() {
     this.uiManager.setButtonStates(false);
-    // TODO: parar áudio
     console.log("Parando áudio...");
     this.visualizationEngine.stop();
   }
 
   setVisualization(type) {
-    // TODO: definir tipo de visualização
-    this.visualizationEngine.setVisualization(type);
-    console.log(`Definindo visualização: ${type}`);
+    if (this.visualizationEngine.setVisualization(type)) {
+      console.log(`Definindo visualização: ${type}`);
+    } else {
+      this.uiManager.showError(
+        `Visualização ${type} inexistente. \n A selecionar visualização "Spectrum"`
+      );
+      this.visualizationEngine.setDefaultVisualization();
+    }
   }
 
   exportFrame() {

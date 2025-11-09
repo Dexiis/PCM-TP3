@@ -53,7 +53,6 @@ class AudioVisualization {
   }
 
   clearCanvas() {
-    // TODO: limpar canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 

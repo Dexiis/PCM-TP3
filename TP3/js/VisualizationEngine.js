@@ -11,12 +11,11 @@ class VisualizationEngine {
 
     // Inicializar visualizações
     this.initVisualizations();
-    this.setVisualization("spectrum");
+    // Inicializa a visualização default "Espectro"
+    this.setDefaultVisualization();
   }
 
   initVisualizations() {
-    // TODO: inicializar tipos de visualização
-
     this.visualizations.set(
       "spectrum",
       new SpectrumVisualization(this.canvas, this.audioProcessor)
@@ -31,6 +30,10 @@ class VisualizationEngine {
     );
   }
 
+  setDefaultVisualization() {
+    this.setVisualization("spectrum");
+  }
+
   setVisualization(type) {
     this.currentVisualization = null;
     this.currentVisualization = this.visualizations.get(type);
@@ -40,26 +43,35 @@ class VisualizationEngine {
   }
 
   start() {
+    // Garantir que start não é chamado se o loop já estiver a correr
     if (this.isRunning) return;
     this.isRunning = true;
+    // Chama o loop
     this.animationId = requestAnimationFrame(() => this.updateLoop());
+
     console.log("Iniciando motor de visualização...");
   }
 
   stop() {
     this.isRunning = false;
     if (this.animationId) {
+      // Para o loop
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
+      // Para o processamento de áudio
       this.audioProcessor.stop();
     }
     this.currentVisualization.clearCanvas();
+
     console.log("Parando motor de visualização...");
   }
 
   updateLoop() {
+    // Garante que a atualização para se o loop já foi parado
     if (!this.isRunning) return;
+    // Recursivamente corre o loop
     this.animationId = requestAnimationFrame(() => this.updateLoop());
+    // Atualiza a visualização
     this.currentVisualization.update();
   }
 

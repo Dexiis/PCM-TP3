@@ -38,6 +38,8 @@ class AudioProcessor {
     // TODO: carregar ficheiro de áudio
     console.log("Carregando ficheiro de áudio...");
 
+    // Arranjar
+
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
         .then((stream) => {
