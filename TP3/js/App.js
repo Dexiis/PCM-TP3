@@ -3,7 +3,7 @@ $(document).ready(function () {
   const app = new App();
 
   // Expor app globalmente para debugging (remover em produção)
-  window.app = app;
+  //window.app = app;
 });
 
 // Classe principal da aplicação
@@ -29,7 +29,7 @@ class App {
     this.uiManager.setButtonStates(true);
     this.audioProcessor
       .startMicrophone()
-      .then((stream) => {
+      .then(() => {
         this.visualizationEngine.start();
       })
       .catch((error) => {
@@ -41,7 +41,16 @@ class App {
   }
 
   loadAudioFile(file) {
-    // FAZER ESSE MAMBO
+    this.uiManager.setButtonStates(true);
+    this.audioProcessor
+      .loadAudioFile(file)
+      .then(() => {
+        this.visualizationEngine.start();
+      })
+      .catch((error) => {
+        this.uiManager.updateAudioInfo(error, true);
+        this.uiManager.setButtonStates(false);
+      });
     console.log("Carregando ficheiro de áudio...");
   }
 
@@ -60,11 +69,6 @@ class App {
       );
       this.visualizationEngine.setDefaultVisualization();
     }
-  }
-
-  exportFrame() {
-    // TODO: exportar frame atual
-    console.log("Exportando frame...");
   }
 
   destroy() {

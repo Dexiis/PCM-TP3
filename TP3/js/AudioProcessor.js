@@ -2,7 +2,7 @@
 class AudioProcessor {
   constructor(app) {
     this.app = app;
-    this.audioContext = null;
+    this.audioContext = new AudioContext();
     this.analyser = null;
     this.mediaStream = null;
     this.frequencyData = null;
@@ -11,20 +11,16 @@ class AudioProcessor {
   }
 
   async startMicrophone() {
-    const audioCtx = new AudioContext();
     console.log("Iniciando captura do microfone...");
     return new Promise((resolve, reject) => {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          this.audioContext = audioCtx;
-          const mediaSource = audioCtx.createMediaStreamSource(stream);
-          this.analyser = audioCtx.createAnalyser();
-          this.analyser.fftSize = 2048;
+          this.setupAnalyser();
+          const mediaSource = this.audioContext.createMediaStreamSource(stream);
           mediaSource.connect(this.analyser);
-          //this.analyser.connect(audioCtx.destination); APENAS ATIVAR PARA OUVIR
-          this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
-          this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
+          // Ativar para ouvir input
+          //this.analyser.connect(this.audioContext.destination);
           this.mediaStream = stream;
           resolve("Microfone ativado com sucesso");
         })
@@ -35,31 +31,29 @@ class AudioProcessor {
   }
 
   async loadAudioFile(file) {
-    // TODO: carregar ficheiro de áudio
     console.log("Carregando ficheiro de áudio...");
 
-    // Arranjar
-
     return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-        .then((stream) => {
-          reader.onload = async (e) => {
-            const audioData = e.target.result;
-            const audioBuffer = await this.audioContext.decodeAudioData(
-              audioData
-            );
-            const source = this.audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            resolve("Ficheiro carregado com sucesso");
-          };
-        })
-        .catch((error) => {
-          reject(`Erro ao carregar o ficheiro de áudio: ${error.message}`);
-        });
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.setupAnalyser();
+
+        resolve(e.target.result);
+      };
+
+      reader.onerror = () => {
+        reject(reader.error);
+      };
+
       reader.readAsArrayBuffer(file);
     });
+  }
 
-    // Devolver Promise
+  setupAnalyser() {
+    this.analyser = this.audioContext.createAnalyser();
+    this.analyser.fftSize = 2048;
+    this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
+    this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
   }
 
   stop() {

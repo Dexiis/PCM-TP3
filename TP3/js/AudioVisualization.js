@@ -31,7 +31,7 @@ class AudioVisualization {
     this.draw();
     this.frameCount++;
     this.audioProcessor.update();
-    if (this.frameCount % 5 === 0) this.audioProcessor.updateUI();
+    if (this.frameCount % 10 === 0) this.audioProcessor.updateUI();
   }
 
   resize(width, height) {

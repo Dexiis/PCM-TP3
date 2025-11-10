@@ -62,7 +62,7 @@ class UIManager {
   setupEventListeners() {
     // TODO: configurar event listeners
     $("#startMic").on("click", () => this.app.startMicrophone());
-    $("#stopAudio").on("click", () => app.stopAudio());
+    $("#stopAudio").on("click", () => this.app.stopAudio());
     $("#fullscreenButton").on("click", () =>
       this.visualizationEngine.fullscreen()
     );
