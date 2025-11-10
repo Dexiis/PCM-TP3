@@ -88,6 +88,10 @@ class UIManager {
     });
   }
 
+  clearAudioInput() {
+    document.getElementById("audioFile").value = "";
+  }
+
   setupAudioLevels() {
     // TODO: configurar monitorização de níveis de áudio
   }

@@ -22,7 +22,7 @@ class SpectrumVisualization extends AudioVisualization {
       const y = this.canvas.height - barHeight;
 
       this.ctx.fillStyle = `hsl(${(i / data.length) * 360}, 100%, 50%)`;
-      this.ctx.fillRect(x, y, barWidth - 1, barHeight);
+      this.ctx.fillRect(x, y, barWidth, barHeight);
     }
   }
 

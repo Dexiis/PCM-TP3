@@ -31,7 +31,7 @@ class WaveformVisualization extends AudioVisualization {
     }
 
     this.ctx.strokeStyle = "#4cc9f0";
-    this.ctx.lineWidth = 2;
+    this.ctx.lineWidth = 5;
     this.ctx.stroke();
   }
 

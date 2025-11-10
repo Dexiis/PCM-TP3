@@ -19,6 +19,15 @@ class AudioVisualization {
     for (let i = 0; i < this.testData.length; i++) {
       this.testData[i] = Math.sin(i / 10) * 128 + 128;
     }
+
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = "high";
+
+    const scale = window.devicePixelRatio || 1;
+    this.canvas.width = window.innerWidth * scale;
+    this.canvas.height = window.innerHeight * scale;
+
+    this.ctx.scale(scale, scale);
   }
 
   // Método abstrato
@@ -57,21 +66,6 @@ class AudioVisualization {
   }
 
   drawGrid() {
-    // TODO: desenhar grelha de fundo
-  }
-
-  createGradient() {
-    // TODO: criar gradiente de cores
-    return this.ctx.createLinearGradient(
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.height
-    );
-  }
-
-  normalizeData() {
-    // TODO: normalizar dados de áudio
-    return [];
+    // DRAW GRID
   }
 }

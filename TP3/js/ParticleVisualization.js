@@ -29,14 +29,14 @@ class ParticleVisualization extends AudioVisualization {
 
   initParticles() {
     // TODO: inicializar partículas
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 75; i++) {
       this.particles.push({
         x: Math.random() * this.canvas.width,
         y: Math.random() * this.canvas.height,
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2,
-        radius: Math.random() * 3 + 1,
-        color: `rgba(0, 0, 255)`,
+        radius: Math.random() * 4 + 2,
+        color: `rgba(255, 0, 0)`,
       });
     }
   }
@@ -71,7 +71,7 @@ class ParticleVisualization extends AudioVisualization {
 
         // Limitar velocidade
         const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-        const maxSpeed = 2 + audioLevel * 3;
+        const maxSpeed = 0.5 + audioLevel * 15;
         if (speed > maxSpeed) {
           p.vx = (p.vx / speed) * maxSpeed;
           p.vy = (p.vy / speed) * maxSpeed;
@@ -91,7 +91,6 @@ class ParticleVisualization extends AudioVisualization {
   }
 
   drawConnections() {
-    // TODO: desenhar conexões entre partículas
     const maxDistance = 100;
 
     for (let i = 0; i < this.particles.length; i++) {
@@ -109,7 +108,7 @@ class ParticleVisualization extends AudioVisualization {
           this.ctx.moveTo(p1.x, p1.y);
           this.ctx.lineTo(p2.x, p2.y);
           this.ctx.strokeStyle = `rgba(76, 201, 240, ${opacity * 0.8})`;
-          this.ctx.lineWidth = 0.3;
+          this.ctx.lineWidth = 2;
           this.ctx.stroke();
         }
       }

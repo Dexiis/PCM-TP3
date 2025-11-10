@@ -8,6 +8,9 @@ class AudioProcessor {
     this.frequencyData = null;
     this.waveformData = null;
     this.isPlaying = false;
+    this.source = null;
+
+    this.setupAnalyser();
   }
 
   async startMicrophone() {
@@ -16,7 +19,8 @@ class AudioProcessor {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          this.setupAnalyser();
+          this.ensureRunning();
+
           const mediaSource = this.audioContext.createMediaStreamSource(stream);
           mediaSource.connect(this.analyser);
           // Ativar para ouvir input
@@ -32,13 +36,38 @@ class AudioProcessor {
 
   async loadAudioFile(file) {
     console.log("Carregando ficheiro de áudio...");
-
+    
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        this.setupAnalyser();
+      reader.onload = async (e) => {
+        try {
+          this.ensureRunning();
 
-        resolve(e.target.result);
+          if(this.source)
+            this.source.disconnect();
+
+          const audioBuffer = await this.audioContext.decodeAudioData(e.target.result);
+          const source = this.audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+
+          source.connect(this.analyser);
+          this.analyser.connect(this.audioContext.destination);
+
+          this.source = source;
+          this.source.start();
+          this.isPlaying = true;
+
+          this.source.onended = () => {
+            console.log("O áudio terminou");
+            this.isPlaying = false;
+          };
+
+          resolve(e.target.result);
+        } catch (error) {
+          console.error("Erro ao decodificar ou configurar áudio:", error);
+          reject(error);
+        }
+        
       };
 
       reader.onerror = () => {
@@ -47,11 +76,12 @@ class AudioProcessor {
 
       reader.readAsArrayBuffer(file);
     });
+    
   }
 
   setupAnalyser() {
     this.analyser = this.audioContext.createAnalyser();
-    this.analyser.fftSize = 2048;
+    this.analyser.fftSize = 4096;
     this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
     this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
   }
@@ -59,9 +89,22 @@ class AudioProcessor {
   stop() {
     if (this.mediaStream)
       this.mediaStream.getTracks().forEach((track) => track.stop());
+
+    if(this.source && this.source.stop)
+      this.source.stop();
+
+    if(this.audioContext)
+      this.audioContext.suspend();
+
     this.app.updateUIInfo();
 
     console.log("Parando processamento de áudio...");
+  }
+
+  async ensureRunning() {
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
   }
 
   update() {
@@ -83,10 +126,15 @@ class AudioProcessor {
   }
 
   calculateAudioLevel() {
-    let audioLevel = this.getWaveformData().slice(-1)[0];
-    audioLevel = audioLevel - 128;
-    audioLevel = (audioLevel * 100) / 128;
-    audioLevel = Math.abs(audioLevel);
-    return audioLevel;
+    // RMS of the samples in the whole array of waveform
+    let waveform = this.getWaveformData();
+    let sumSquares = 0;
+    for(let sample of waveform) {
+      let normalizedSample = (sample - 128) / 128;
+      sumSquares += normalizedSample * normalizedSample;
+    }
+
+    let rms = Math.sqrt(sumSquares / waveform.length);
+    return rms * 100;
   }
 }

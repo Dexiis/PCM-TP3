@@ -58,6 +58,8 @@ class App {
     this.uiManager.setButtonStates(false);
     console.log("Parando áudio...");
     this.visualizationEngine.stop();
+    // Remove the file from the input
+    this.uiManager.clearAudioInput();
   }
 
   setVisualization(type) {
