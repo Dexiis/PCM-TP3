@@ -40,6 +40,7 @@ class AudioVisualization {
     this.draw();
     this.frameCount++;
     this.audioProcessor.update();
+    // Atualizar de 10 em 10 frames
     if (this.frameCount % 10 === 0) this.audioProcessor.updateUI();
   }
 
@@ -49,13 +50,15 @@ class AudioVisualization {
     this.canvas.height = height;
   }
 
+  addProperty(property) {
+    this.properties.address = property;
+  }
+
   getProperties() {
-    // TODO: obter propriedades da visualização
     return this.properties;
   }
 
   updateProperty(property, value) {
-    // TODO: atualizar propriedade
     if (this.properties.hasOwnProperty(property)) {
       this.properties[property] = value;
     }

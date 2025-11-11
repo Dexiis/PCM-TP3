@@ -15,48 +15,44 @@ class UIManager {
   }
 
   updateAudioInfo(info, isError = false) {
-    // TODO: atualizar informações de áudio
-    const audioStatus = document.getElementById("audioStatus");
-    const audioLevel = document.getElementById("audioLevel");
+    const $audioStatus = $("#audioStatus");
+    const $audioLevel = $("#audioLevel");
 
     if (isError) {
-      audioStatus.textContent = `Erro: ${info}`;
-      audioStatus.style.color = "#f72585";
+      $audioStatus.text(`Erro: ${info}`);
+      $audioStatus.css("color", "#f72585");
     } else {
-      audioStatus.textContent = `Áudio: ${info.status || "Ativo"}`;
-      audioStatus.style.color = "#e6e6e6";
-      audioLevel.textContent = `Nível: ${info.level || 0}%`;
+      $audioStatus.text(`Áudio: ${info.status || "Ativo"}`);
+      $audioStatus.css("color", "#e6e6e6");
+      $audioLevel.text(`Nível: ${info.level || 0}%`);
     }
   }
 
   setButtonStates(playing) {
-    // TODO: atualizar estados dos botões
-    const startMicBtn = $("#startMic");
-    const stopAudioBtn = $("#stopAudio");
+    const $startMicBtn = $("#startMic");
+    const $stopAudioBtn = $("#stopAudio");
 
-    startMicBtn.prop("disabled", playing);
-    stopAudioBtn.prop("disabled", !playing);
+    $startMicBtn.prop("disabled", playing);
+    $stopAudioBtn.prop("disabled", !playing);
   }
 
   showError(message) {
     // TODO: mostrar mensagem de erro
-    const errorModal = document.getElementById("errorModal");
-    const errorMessage = document.getElementById("errorMessage");
+    const $errorModal = $("#errorModal");
+    const $errorMessage = $("#errorMessage");
 
-    errorMessage.textContent = message;
-    errorModal.classList.remove("hidden");
+    $errorMessage.text(message);
+    $errorModal.removeClass("hidden");
 
     // Fechar modal ao clicar no X
-    document.querySelector(".close").onclick = () => {
-      errorModal.classList.add("hidden");
-    };
+    $(".close").on("click", () => $errorModal.addClass("hidden"));
 
     // Fechar modal ao clicar fora
-    window.onclick = (event) => {
-      if (event.target === errorModal) {
-        errorModal.classList.add("hidden");
+    $(window).on("click", (event) => {
+      if ($(event.target).is($errorModal)) {
+        $errorModal.addClass("hidden");
       }
-    };
+    });
   }
 
   setupEventListeners() {
@@ -67,29 +63,24 @@ class UIManager {
       this.visualizationEngine.fullscreen()
     );
 
-    document.getElementById("audioFile").addEventListener("change", (e) => {
+    $("#audioFile").on("change", (e) => {
       if (e.target.files.length > 0) {
         this.app.loadAudioFile(e.target.files[0]);
       }
     });
 
-    document
-      .getElementById("visualizationType")
-      .addEventListener("change", (e) => {
-        this.app.setVisualization(e.target.value);
-      });
-
-    document.getElementById("exportPNG").addEventListener("click", () => {
-      this.app.exportManager.exportAsPNG();
+    $("#visualizationType").on("change", (e) => {
+      this.app.setVisualization(e.target.value);
     });
 
-    document.getElementById("exportJPEG").addEventListener("click", () => {
-      this.app.exportManager.exportAsJPEG(0.9);
-    });
+    $("#exportPNG").on("click", () => this.app.exportManager.exportAsPNG());
+    $("#exportJPEG").on("click", () =>
+      this.app.exportManager.exportAsJPEG(0.9)
+    );
   }
 
   clearAudioInput() {
-    document.getElementById("audioFile").value = "";
+    $("#audioFile").val("");
   }
 
   setupAudioLevels() {
@@ -98,31 +89,37 @@ class UIManager {
 
   createPropertyControl(property, value, min, max, step) {
     // TODO: criar controlo de propriedade
-    const container = document.createElement("div");
-    container.className = "property-control";
+    const $container = $("<div>");
+    $container.attr("class", "property-control");
 
-    const label = document.createElement("label");
-    label.textContent = property;
-    label.htmlFor = `prop-${property}`;
+    const $label = $("<label>");
+    $label.text(property);
+    $label.attr("for", `prop-${property}`);
 
-    const input = document.createElement("input");
-    input.type = "range";
-    input.id = `prop-${property}`;
-    input.min = min;
-    input.max = max;
-    input.step = step;
-    input.value = value;
+    const $input = $("<input>");
+    $input.attr({
+      type: "range",
+      id: `prop-${property}`,
+      min,
+      max,
+      step,
+      value,
+    });
 
-    input.addEventListener("input", (e) => {
+    $input.on("input", (e) => {
       this.visualizationEngine.updateVisualizationProperty(
         property,
         parseFloat(e.target.value)
       );
     });
 
-    container.appendChild(label);
-    container.appendChild(input);
+    $container.append($label);
+    $container.append($input);
 
-    return container;
+    return $container;
+  }
+
+  displayPropertyControl(propertyControl) {
+    $("#properties-container").append(propertyControl);
   }
 }

@@ -1,6 +1,6 @@
 // Inicialização da aplicação quando o DOM estiver carregado
 $(document).ready(function () {
-  const app = new App();
+  //const app = new App();
 
   // Expor app globalmente para debugging (remover em produção)
   //window.app = app;
@@ -22,6 +22,7 @@ class App {
   }
 
   init() {
+    this.uiManager.createPropertyControl("Line Width", 5, 2, 8, 1);
     console.log("App inicializada");
   }
 
@@ -71,6 +72,7 @@ class App {
       );
       this.visualizationEngine.setDefaultVisualization();
     }
+    console.log(this.visualizationEngine.currentVisualization.getProperties());
   }
 
   destroy() {

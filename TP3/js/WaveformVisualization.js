@@ -3,10 +3,11 @@ class WaveformVisualization extends AudioVisualization {
     super(canvas, audioProcessor);
     this.name = "Forma de Onda";
     // Inicializar propriedades específicas
+
+    this.addProperty({ name: "Line Width" });
   }
 
   draw() {
-    // TODO: desenhar forma de onda
     this.clearCanvas();
 
     // Implementação básica para teste
@@ -31,7 +32,7 @@ class WaveformVisualization extends AudioVisualization {
     }
 
     this.ctx.strokeStyle = "#4cc9f0";
-    this.ctx.lineWidth = 5;
+    this.ctx.lineWidth = this.getProperties;
     this.ctx.stroke();
   }
 

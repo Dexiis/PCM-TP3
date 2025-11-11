@@ -83,13 +83,16 @@ class VisualizationEngine {
     });
   }
 
+  addProperty(property) {
+    this.currentVisualization.addProperty(property);
+  }
+
   getVisualizationProperties() {
-    // TODO: obter propriedades da visualização atual
-    return {};
+    return this.currentVisualization.getProperties();
   }
 
   updateVisualizationProperty(property, value) {
-    // TODO: atualizar propriedade da visualização
     console.log(`Atualizando propriedade: ${property} = ${value}`);
+    this.currentVisualization.updateProperty(property, value);
   }
 }
