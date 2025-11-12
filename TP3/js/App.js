@@ -1,7 +1,6 @@
 // Inicialização da aplicação quando o DOM estiver carregado
 $(document).ready(function () {
-  //const app = new App();
-
+  const app = new App();
   // Expor app globalmente para debugging (remover em produção)
   //window.app = app;
 });
@@ -22,7 +21,7 @@ class App {
   }
 
   init() {
-    this.uiManager.createPropertyControl("Line Width", 5, 2, 8, 1);
+    this.setDefaultVisualization();
     console.log("App inicializada");
   }
 
@@ -63,15 +62,40 @@ class App {
     this.uiManager.clearAudioInput();
   }
 
+  setDefaultVisualization() {
+    this.setVisualization("spectrum");
+  }
+
   setVisualization(type) {
+    this.uiManager.clearPropertyControls();
     if (this.visualizationEngine.setVisualization(type)) {
       console.log(`Definindo visualização: ${type}`);
+      if (type === "waveform") {
+        const lineWidth = this.uiManager.createPropertyControl(
+          "lineWidth",
+          4,
+          2,
+          8,
+          1
+        );
+        this.uiManager.displayPropertyControl(lineWidth);
+      } else {
+        const color = this.uiManager.createPropertyControl(
+          "color",
+          1,
+          1,
+          360,
+          1
+        );
+        this.uiManager.displayPropertyControl(color);
+      }
     } else {
       this.uiManager.showError(
         `Visualização ${type} inexistente. \n A selecionar visualização "Spectrum"`
       );
       this.visualizationEngine.setDefaultVisualization();
     }
+
     console.log(this.visualizationEngine.currentVisualization.getProperties());
   }
 

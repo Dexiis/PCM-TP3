@@ -3,6 +3,8 @@ class SpectrumVisualization extends AudioVisualization {
     super(canvas, audioProcessor);
     this.name = "Espectro de Frequências";
     // Inicializar propriedades específicas
+
+    this.addProperty("color", 1);
   }
 
   draw() {
@@ -20,13 +22,12 @@ class SpectrumVisualization extends AudioVisualization {
       const x = i * barWidth;
       const y = this.canvas.height - barHeight;
 
-      this.ctx.fillStyle = `hsl(${(i / data.length) * 360}, 100%, 50%)`;
+      this.ctx.fillStyle = `hsl(${this.getProperties().color}, 100%, 50%)`;
       this.ctx.fillRect(x, y, barWidth, barHeight);
     }
   }
 
   getProperties() {
-    // TODO: obter propriedades específicas
     return super.getProperties();
   }
 }

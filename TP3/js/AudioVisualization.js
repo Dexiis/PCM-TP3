@@ -23,11 +23,20 @@ class AudioVisualization {
     this.ctx.imageSmoothingEnabled = true;
     this.ctx.imageSmoothingQuality = "high";
 
-    const scale = window.devicePixelRatio || 1;
-    this.canvas.width = window.innerWidth * scale;
-    this.canvas.height = window.innerHeight * scale;
+    // Get the DPR and size of the canvas
+    const dpr = window.devicePixelRatio;
+    const rect = this.canvas.getBoundingClientRect();
 
-    this.ctx.scale(scale, scale);
+    // Set the "actual" size of the canvas
+    this.canvas.width = rect.width * dpr;
+    this.canvas.height = rect.height * dpr;
+
+    // Scale the context to ensure correct drawing operations
+    this.ctx.scale(dpr, dpr);
+
+    // Set the "drawn" size of the canvas
+    this.canvas.style.width = `${rect.width}px`;
+    this.canvas.style.height = `${rect.height}px`;
   }
 
   // Método abstrato
@@ -50,8 +59,8 @@ class AudioVisualization {
     this.canvas.height = height;
   }
 
-  addProperty(property) {
-    this.properties.address = property;
+  addProperty(property, value) {
+    this.properties[property] = value;
   }
 
   getProperties() {

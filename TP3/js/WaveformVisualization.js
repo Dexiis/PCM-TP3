@@ -4,7 +4,7 @@ class WaveformVisualization extends AudioVisualization {
     this.name = "Forma de Onda";
     // Inicializar propriedades específicas
 
-    this.addProperty({ name: "Line Width" });
+    this.addProperty("lineWidth", 4);
   }
 
   draw() {
@@ -32,12 +32,11 @@ class WaveformVisualization extends AudioVisualization {
     }
 
     this.ctx.strokeStyle = "#4cc9f0";
-    this.ctx.lineWidth = this.getProperties;
+    this.ctx.lineWidth = this.getProperties().lineWidth;
     this.ctx.stroke();
   }
 
   getProperties() {
-    // TODO: obter propriedades específicas
     return super.getProperties();
   }
 }

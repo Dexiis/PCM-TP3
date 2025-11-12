@@ -122,4 +122,8 @@ class UIManager {
   displayPropertyControl(propertyControl) {
     $("#properties-container").append(propertyControl);
   }
+
+  clearPropertyControls() {
+    $("#properties-container").html("");
+  }
 }

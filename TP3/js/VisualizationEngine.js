@@ -11,8 +11,6 @@ class VisualizationEngine {
 
     // Inicializar visualizações
     this.initVisualizations();
-    // Inicializa a visualização default "Espectro"
-    this.setDefaultVisualization();
   }
 
   initVisualizations() {
@@ -28,10 +26,6 @@ class VisualizationEngine {
       "particles",
       new ParticleVisualization(this.canvas, this.audioProcessor)
     );
-  }
-
-  setDefaultVisualization() {
-    this.setVisualization("spectrum");
   }
 
   setVisualization(type) {
@@ -75,16 +69,10 @@ class VisualizationEngine {
     this.currentVisualization.update();
   }
 
-  resize() {}
-
   fullscreen() {
     this.canvas.requestFullscreen().catch((error) => {
       console.error(`${error.message}`);
     });
-  }
-
-  addProperty(property) {
-    this.currentVisualization.addProperty(property);
   }
 
   getVisualizationProperties() {

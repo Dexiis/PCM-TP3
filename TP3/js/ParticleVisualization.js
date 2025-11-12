@@ -7,6 +7,8 @@ class ParticleVisualization extends AudioVisualization {
 
     // Inicializar partículas
     this.initParticles();
+
+    this.addProperty("color", 1);
   }
 
   draw() {
@@ -52,6 +54,8 @@ class ParticleVisualization extends AudioVisualization {
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
+
+      p.color = `hsl(${this.getProperties().color}, 100%, 50%)`;
 
       // Mover partícula
       p.x += p.vx;
@@ -108,7 +112,7 @@ class ParticleVisualization extends AudioVisualization {
           this.ctx.moveTo(p1.x, p1.y);
           this.ctx.lineTo(p2.x, p2.y);
           this.ctx.strokeStyle = `rgba(76, 201, 240, ${opacity * 0.8})`;
-          this.ctx.lineWidth = 2;
+          this.ctx.lineWidth = 1;
           this.ctx.stroke();
         }
       }
