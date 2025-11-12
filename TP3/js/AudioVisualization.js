@@ -20,23 +20,20 @@ class AudioVisualization {
       this.testData[i] = Math.sin(i / 10) * 128 + 128;
     }
 
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = "high";
+    const dpr = window.devicePixelRatio || 1;
 
-    // Get the DPR and size of the canvas
-    const dpr = window.devicePixelRatio;
+    // Get the *displayed* size of the canvas
     const rect = this.canvas.getBoundingClientRect();
 
-    // Set the "actual" size of the canvas
-    this.canvas.width = rect.width * dpr;
-    this.canvas.height = rect.height * dpr;
+    // Match internal resolution to display size * dpr
+    this.canvas.width = 2 * rect.width * dpr;
+    this.canvas.height = 2 * rect.height * dpr;
 
-    // Scale the context to ensure correct drawing operations
+    // Ensure rendering looks sharp
     this.ctx.scale(dpr, dpr);
 
-    // Set the "drawn" size of the canvas
-    this.canvas.style.width = `${rect.width}px`;
-    this.canvas.style.height = `${rect.height}px`;
+    this.addProperty("drawGrid", false);
+    this.addProperty("gridWidth", 75);
   }
 
   // Método abstrato
@@ -45,7 +42,6 @@ class AudioVisualization {
   }
 
   update() {
-    // TODO: atualizar estado da visualização
     this.draw();
     this.frameCount++;
     this.audioProcessor.update();
@@ -54,7 +50,6 @@ class AudioVisualization {
   }
 
   resize(width, height) {
-    // TODO: redimensionar visualização
     this.canvas.width = width;
     this.canvas.height = height;
   }
@@ -65,6 +60,13 @@ class AudioVisualization {
 
   getProperties() {
     return this.properties;
+  }
+
+  // Reinicia as propriedades da visualização
+  resetProperties() {
+    throw new Error(
+      "Método resetProperties() deve ser implementado pela subclasse."
+    );
   }
 
   updateProperty(property, value) {
@@ -78,6 +80,23 @@ class AudioVisualization {
   }
 
   drawGrid() {
-    // DRAW GRID
+    const gridSize = this.getProperties().gridWidth;
+
+    this.ctx.strokeStyle = "#ddd";
+    this.ctx.lineWidth = 1;
+
+    for (let x = 0; x <= this.canvas.width; x += gridSize) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, 0);
+      this.ctx.lineTo(x, this.canvas.height);
+      this.ctx.stroke();
+    }
+
+    for (let y = 0; y <= this.canvas.height; y += gridSize) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, y);
+      this.ctx.lineTo(this.canvas.width, y);
+      this.ctx.stroke();
+    }
   }
 }

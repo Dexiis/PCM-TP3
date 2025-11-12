@@ -36,17 +36,19 @@ class AudioProcessor {
 
   async loadAudioFile(file) {
     console.log("Carregando ficheiro de áudio...");
-    
+
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
+          this.stop();
           this.ensureRunning();
 
-          if(this.source)
-            this.source.disconnect();
+          if (this.source) this.source.disconnect();
 
-          const audioBuffer = await this.audioContext.decodeAudioData(e.target.result);
+          const audioBuffer = await this.audioContext.decodeAudioData(
+            e.target.result
+          );
           const source = this.audioContext.createBufferSource();
           source.buffer = audioBuffer;
 
@@ -67,7 +69,6 @@ class AudioProcessor {
           console.error("Erro ao decodificar ou configurar áudio:", error);
           reject(error);
         }
-        
       };
 
       reader.onerror = () => {
@@ -76,7 +77,6 @@ class AudioProcessor {
 
       reader.readAsArrayBuffer(file);
     });
-    
   }
 
   setupAnalyser() {
@@ -90,11 +90,9 @@ class AudioProcessor {
     if (this.mediaStream)
       this.mediaStream.getTracks().forEach((track) => track.stop());
 
-    if(this.source && this.source.stop)
-      this.source.stop();
+    if (this.source && this.source.stop) this.source.stop();
 
-    if(this.audioContext)
-      this.audioContext.suspend();
+    if (this.audioContext) this.audioContext.suspend();
 
     this.app.updateUIInfo();
 
@@ -102,7 +100,7 @@ class AudioProcessor {
   }
 
   async ensureRunning() {
-    if (this.audioContext.state === 'suspended') {
+    if (this.audioContext.state === "suspended") {
       await this.audioContext.resume();
     }
   }
@@ -129,7 +127,7 @@ class AudioProcessor {
     // RMS of the samples in the whole array of waveform
     let waveform = this.getWaveformData();
     let sumSquares = 0;
-    for(let sample of waveform) {
+    for (let sample of waveform) {
       let normalizedSample = (sample - 128) / 128;
       sumSquares += normalizedSample * normalizedSample;
     }

@@ -1,8 +1,6 @@
 // Inicialização da aplicação quando o DOM estiver carregado
 $(document).ready(function () {
-  const app = new App();
-  // Expor app globalmente para debugging (remover em produção)
-  //window.app = app;
+  new App();
 });
 
 // Classe principal da aplicação
@@ -72,6 +70,7 @@ class App {
       console.log(`Definindo visualização: ${type}`);
       if (type === "waveform") {
         const lineWidth = this.uiManager.createPropertyControl(
+          "Largura de Linha",
           "lineWidth",
           4,
           2,
@@ -81,6 +80,7 @@ class App {
         this.uiManager.displayPropertyControl(lineWidth);
       } else {
         const color = this.uiManager.createPropertyControl(
+          "Cor da Visualização",
           "color",
           1,
           1,
@@ -89,11 +89,27 @@ class App {
         );
         this.uiManager.displayPropertyControl(color);
       }
+      const drawGrid = this.uiManager.createRadioPropertyControl(
+        "Desenhar Grelha",
+        "drawGrid",
+        true
+      );
+      this.uiManager.displayPropertyControl(drawGrid);
+
+      const gridWidth = this.uiManager.createPropertyControl(
+        "Largura de Linha da Grelha",
+        "gridWidth",
+        75,
+        50,
+        150,
+        1
+      );
+      this.uiManager.displayPropertyControl(gridWidth);
     } else {
       this.uiManager.showError(
         `Visualização ${type} inexistente. \n A selecionar visualização "Spectrum"`
       );
-      this.visualizationEngine.setDefaultVisualization();
+      this.setDefaultVisualization();
     }
 
     console.log(this.visualizationEngine.currentVisualization.getProperties());

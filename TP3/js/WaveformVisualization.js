@@ -10,6 +10,8 @@ class WaveformVisualization extends AudioVisualization {
   draw() {
     this.clearCanvas();
 
+    if (this.getProperties().drawGrid) this.drawGrid();
+
     // Implementação básica para teste
     const data = this.audioProcessor
       ? this.audioProcessor.getWaveformData()
@@ -38,5 +40,9 @@ class WaveformVisualization extends AudioVisualization {
 
   getProperties() {
     return super.getProperties();
+  }
+
+  resetProperties() {
+    this.getProperties().lineWidth = 4;
   }
 }

@@ -3,7 +3,6 @@ class ParticleVisualization extends AudioVisualization {
     super(canvas, audioProcessor);
     this.name = "Partículas";
     this.particles = [];
-    this.lastTime = 0;
 
     // Inicializar partículas
     this.initParticles();
@@ -14,6 +13,8 @@ class ParticleVisualization extends AudioVisualization {
   draw() {
     // TODO: desenhar partículas
     this.clearCanvas();
+
+    if (this.getProperties().drawGrid) this.drawGrid();
     this.drawParticles();
     this.drawConnections();
   }
@@ -29,15 +30,19 @@ class ParticleVisualization extends AudioVisualization {
     return super.getProperties();
   }
 
+  resetProperties() {
+    this.getProperties().color = 1;
+  }
+
   initParticles() {
     // TODO: inicializar partículas
-    for (let i = 0; i < 75; i++) {
+    for (let i = 0; i < 50; i++) {
       this.particles.push({
         x: Math.random() * this.canvas.width,
         y: Math.random() * this.canvas.height,
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2,
-        radius: Math.random() * 4 + 2,
+        radius: Math.random() * 8 + 4,
         color: `rgba(255, 0, 0)`,
       });
     }
@@ -70,8 +75,8 @@ class ParticleVisualization extends AudioVisualization {
         const freqIndex = Math.floor((i / this.particles.length) * data.length);
         const intensity = data[freqIndex] / 255;
 
-        p.vx += (Math.random() - 0.5) * intensity * 0.5;
-        p.vy += (Math.random() - 0.5) * intensity * 0.5;
+        p.vx += (Math.random() - 0.5) * intensity * 5;
+        p.vy += (Math.random() - 0.5) * intensity * 5;
 
         // Limitar velocidade
         const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
@@ -112,7 +117,7 @@ class ParticleVisualization extends AudioVisualization {
           this.ctx.moveTo(p1.x, p1.y);
           this.ctx.lineTo(p2.x, p2.y);
           this.ctx.strokeStyle = `rgba(76, 201, 240, ${opacity * 0.8})`;
-          this.ctx.lineWidth = 1;
+          this.ctx.lineWidth = 2;
           this.ctx.stroke();
         }
       }

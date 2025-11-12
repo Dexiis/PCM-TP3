@@ -26,11 +26,17 @@ class VisualizationEngine {
       "particles",
       new ParticleVisualization(this.canvas, this.audioProcessor)
     );
+    this.visualizations.set(
+      "reactiveBall",
+      new ReactiveBallVisualization(this.canvas, this.audioProcessor)
+    );
   }
 
   setVisualization(type) {
     this.currentVisualization = null;
     this.currentVisualization = this.visualizations.get(type);
+    // Reinicia as propriedades da visualização para voltar a sincronizar a propriedade ao valor inicial do slider
+    if (this.currentVisualization) this.currentVisualization.resetProperties();
     console.log(this.currentVisualization);
     console.log(`Definindo visualização: ${type}`);
     return this.currentVisualization; // Devolver boolean indicando sucesso

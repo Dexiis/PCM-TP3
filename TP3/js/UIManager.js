@@ -87,14 +87,14 @@ class UIManager {
     // TODO: configurar monitorização de níveis de áudio
   }
 
-  createPropertyControl(property, value, min, max, step) {
-    // TODO: criar controlo de propriedade
+  createPropertyControl(propertyName, property, value, min, max, step) {
     const $container = $("<div>");
-    $container.attr("class", "property-control");
+    $container.addClass("property-control");
 
     const $label = $("<label>");
-    $label.text(property);
+    $label.text(propertyName);
     $label.attr("for", `prop-${property}`);
+    $label.addClass("property-label");
 
     const $input = $("<input>");
     $input.attr({
@@ -110,6 +110,35 @@ class UIManager {
       this.visualizationEngine.updateVisualizationProperty(
         property,
         parseFloat(e.target.value)
+      );
+    });
+
+    $container.append($label);
+    $container.append($input);
+
+    return $container;
+  }
+
+  createRadioPropertyControl(propertyName, property, value) {
+    const $container = $("<div>");
+    $container.addClass("property-control");
+
+    const $label = $("<label>");
+    $label.text(propertyName);
+    $label.attr("for", `prop-${property}`);
+    $label.addClass("property-label");
+
+    const $input = $("<input>");
+    $input.attr({
+      type: "checkbox",
+      id: `prop-${property}`,
+      value,
+    });
+
+    $input.on("change", (e) => {
+      this.visualizationEngine.updateVisualizationProperty(
+        property,
+        e.target.checked
       );
     });
 

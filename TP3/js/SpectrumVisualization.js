@@ -8,8 +8,9 @@ class SpectrumVisualization extends AudioVisualization {
   }
 
   draw() {
-    // TODO: desenhar espectro de frequências
     this.clearCanvas();
+
+    if (this.getProperties().drawGrid) this.drawGrid();
 
     // Implementação básica para teste
     const data = this.audioProcessor
@@ -29,5 +30,9 @@ class SpectrumVisualization extends AudioVisualization {
 
   getProperties() {
     return super.getProperties();
+  }
+
+  resetProperties() {
+    this.getProperties().color = 1;
   }
 }
