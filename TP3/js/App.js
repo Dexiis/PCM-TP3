@@ -68,43 +68,7 @@ class App {
     this.uiManager.clearPropertyControls();
     if (this.visualizationEngine.setVisualization(type)) {
       console.log(`Definindo visualização: ${type}`);
-      if (type === "waveform") {
-        const lineWidth = this.uiManager.createPropertyControl(
-          "Largura de Linha",
-          "lineWidth",
-          4,
-          2,
-          8,
-          1
-        );
-        this.uiManager.displayPropertyControl(lineWidth);
-      } else {
-        const color = this.uiManager.createPropertyControl(
-          "Cor da Visualização",
-          "color",
-          1,
-          1,
-          360,
-          1
-        );
-        this.uiManager.displayPropertyControl(color);
-      }
-      const drawGrid = this.uiManager.createRadioPropertyControl(
-        "Desenhar Grelha",
-        "drawGrid",
-        true
-      );
-      this.uiManager.displayPropertyControl(drawGrid);
-
-      const gridWidth = this.uiManager.createPropertyControl(
-        "Largura de Linha da Grelha",
-        "gridWidth",
-        75,
-        50,
-        150,
-        1
-      );
-      this.uiManager.displayPropertyControl(gridWidth);
+      this.uiManager.updatePropertiesPanel(type);
     } else {
       this.uiManager.showError(
         `Visualização ${type} inexistente. \n A selecionar visualização "Spectrum"`

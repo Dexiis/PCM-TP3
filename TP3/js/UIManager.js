@@ -9,8 +9,44 @@ class UIManager {
     this.setupEventListeners();
   }
 
-  updatePropertiesPanel() {
-    // TODO: atualizar painel de propriedades
+  updatePropertiesPanel(type) {
+    if (type === "waveform") {
+      const lineWidth = this.createPropertyControl(
+        "Largura de Linha",
+        "lineWidth",
+        4,
+        2,
+        8,
+        1
+      );
+      this.displayPropertyControl(lineWidth);
+    } else {
+      const color = this.createPropertyControl(
+        "Cor da Visualização",
+        "color",
+        1,
+        1,
+        360,
+        1
+      );
+      this.displayPropertyControl(color);
+    }
+    const drawGrid = this.createRadioPropertyControl(
+      "Desenhar Grelha",
+      "drawGrid",
+      true
+    );
+    this.displayPropertyControl(drawGrid);
+
+    const gridWidth = this.createPropertyControl(
+      "Largura de Linha da Grelha",
+      "gridWidth",
+      75,
+      50,
+      150,
+      1
+    );
+    this.displayPropertyControl(gridWidth);
     console.log("Atualizando painel de propriedades...");
   }
 
