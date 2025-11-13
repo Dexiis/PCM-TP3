@@ -9,6 +9,8 @@ class VisualizationEngine {
     this.isRunning = false;
     this.audioProcessor = audioProcessor;
 
+    this.initRect = this.canvas.getBoundingClientRect();
+
     // Inicializar visualizações
     this.initVisualizations();
   }
@@ -75,9 +77,20 @@ class VisualizationEngine {
     this.currentVisualization.update();
   }
 
+  resize(rect) {
+    this.currentVisualization.resize(rect);
+  }
+
   fullscreen() {
     this.canvas.requestFullscreen().catch((error) => {
       console.error(`${error.message}`);
+    });
+
+    document.addEventListener("fullscreenchange", () => {
+      // Redimensionar com o retângulo de fullscreen
+      if (document.fullscreenElement) this.resize(null);
+      // Redimensionar com o retângulo inicial
+      else this.resize(this.initRect);
     });
   }
 

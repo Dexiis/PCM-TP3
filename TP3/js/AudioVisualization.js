@@ -15,22 +15,15 @@ class AudioVisualization {
     this.testData = new Uint8Array(256);
     this.frameCount = 0;
 
+    this.WIDTH = this.canvas.clientWidth;
+    this.HEIGHT = this.canvas.clientHeight;
+
     // Inicializar dados de teste
     for (let i = 0; i < this.testData.length; i++) {
       this.testData[i] = Math.sin(i / 10) * 128 + 128;
     }
 
-    const dpr = window.devicePixelRatio || 1;
-
-    // Get the *displayed* size of the canvas
-    const rect = this.canvas.getBoundingClientRect();
-
-    // Match internal resolution to display size * dpr
-    this.canvas.width = 2 * rect.width * dpr;
-    this.canvas.height = 2 * rect.height * dpr;
-
-    // Ensure rendering looks sharp
-    this.ctx.scale(dpr, dpr);
+    this.resize();
 
     this.addProperty("drawGrid", false);
     this.addProperty("gridWidth", 75);
@@ -49,9 +42,19 @@ class AudioVisualization {
     if (this.frameCount % 10 === 0) this.audioProcessor.updateUI();
   }
 
-  resize(width, height) {
-    this.canvas.width = width;
-    this.canvas.height = height;
+  resize(clientRect) {
+    const rect = clientRect || this.canvas.getBoundingClientRect();
+    this.canvas.style.width = rect.width + "px";
+    this.canvas.style.height = rect.height + "px";
+
+    const dpr = 2 * window.devicePixelRatio || 1;
+    this.canvas.width = rect.width * dpr;
+    this.canvas.height = rect.height * dpr;
+
+    this.ctx.scale(dpr, dpr);
+
+    this.WIDTH = rect.width;
+    this.HEIGHT = rect.height;
   }
 
   addProperty(property, value) {

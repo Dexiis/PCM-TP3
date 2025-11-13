@@ -15,8 +15,9 @@ class ParticleVisualization extends AudioVisualization {
     this.clearCanvas();
 
     if (this.getProperties().drawGrid) this.drawGrid();
-    this.drawParticles();
+
     this.drawConnections();
+    this.drawParticles();
   }
 
   update() {
@@ -35,14 +36,15 @@ class ParticleVisualization extends AudioVisualization {
   }
 
   initParticles() {
-    // TODO: inicializar partículas
     for (let i = 0; i < 50; i++) {
       this.particles.push({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
+        x: Math.random() * this.canvas.clientWidth,
+        y: Math.random() * this.canvas.clientHeight,
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2,
-        radius: Math.random() * 8 + 4,
+        radius:
+          (Math.random() * this.canvas.clientWidth) / 200 +
+          this.canvas.clientHeight / 200,
         color: `rgba(255, 0, 0)`,
       });
     }
@@ -67,8 +69,8 @@ class ParticleVisualization extends AudioVisualization {
       p.y += p.vy;
 
       // Rebater nas bordas
-      if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+      if (p.x < 0 || p.x > this.canvas.clientWidth) p.vx *= -1;
+      if (p.y < 0 || p.y > this.canvas.clientHeight) p.vy *= -1;
 
       // Aplicar influência do áudio
       if (data.length > 0) {
@@ -117,7 +119,7 @@ class ParticleVisualization extends AudioVisualization {
           this.ctx.moveTo(p1.x, p1.y);
           this.ctx.lineTo(p2.x, p2.y);
           this.ctx.strokeStyle = `rgba(76, 201, 240, ${opacity * 0.8})`;
-          this.ctx.lineWidth = 2;
+          this.ctx.lineWidth = 1;
           this.ctx.stroke();
         }
       }

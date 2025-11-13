@@ -16,14 +16,14 @@ class WaveformVisualization extends AudioVisualization {
     const data = this.audioProcessor
       ? this.audioProcessor.getWaveformData()
       : this.testData;
-    const sliceWidth = this.canvas.width / data.length;
+    const sliceWidth = this.canvas.clientWidth / data.length;
 
     this.ctx.beginPath();
-    this.ctx.moveTo(0, this.canvas.height / 2);
+    this.ctx.moveTo(0, this.canvas.clientHeight / 2);
 
     for (let i = 0; i < data.length; i++) {
       const v = data[i] / 128.0;
-      const y = (v * this.canvas.height) / 2;
+      const y = (v * this.canvas.clientHeight) / 2;
       const x = i * sliceWidth;
 
       if (i === 0) {
