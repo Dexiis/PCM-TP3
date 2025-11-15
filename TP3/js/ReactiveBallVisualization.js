@@ -32,9 +32,7 @@ class ReactiveBallVisualization extends AudioVisualization {
     this.CENTER_X = this.canvas.clientWidth / 2;
     this.CENTER_Y = this.canvas.clientHeight / 2;
 
-    const aspectRatio = this.canvas.clientHeight / this.canvas.clientWidth;
-
-    this.INITIAL_RADIUS = 75 * (aspectRatio / 0.375);
+    this.INITIAL_RADIUS = 75 * (this.canvas.clientHeight / 300);
 
     const radius =
       this.INITIAL_RADIUS *
