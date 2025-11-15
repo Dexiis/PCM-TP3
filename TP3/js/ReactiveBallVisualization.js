@@ -3,6 +3,21 @@ class ReactiveBallVisualization extends AudioVisualization {
     super(canvas, audioProcessor);
     this.name = "Bola Reativa";
 
+    this.particles = [];
+
+    this.scales = [0.8, 0.85, 0.9, 1, 1.15];
+    this.colors = [
+      `rgba(255, 255, 255, 1)`,
+
+      `rgba(0, 191, 255, 1)`,
+
+      `rgba(255, 32, 40, 1)`,
+
+      `rgba(255, 250, 17, 1)`,
+
+      `rgba(15, 210, 0, 1)`,
+    ];
+
     this.LEFT = true;
     this.RIGHT = false;
 
@@ -11,6 +26,8 @@ class ReactiveBallVisualization extends AudioVisualization {
 
   draw() {
     this.clearCanvas();
+
+    if (this.getProperties().drawGrid) this.drawGrid();
 
     this.CENTER_X = this.canvas.clientWidth / 2;
     this.CENTER_Y = this.canvas.clientHeight / 2;
@@ -23,24 +40,17 @@ class ReactiveBallVisualization extends AudioVisualization {
       this.INITIAL_RADIUS *
       ((this.audioProcessor.calculateAudioLevel() / 100) * 0.2 + 1);
 
+    this.createParticles();
+    this.updateParticles();
+    this.drawParticles();
+
     this.mainCircle(radius);
 
-    const scales = [0.8, 0.85, 0.9, 0.95, 1 ];
-    const colors = [
-      `rgba(255, 255, 255, 1)`,
+    /* for (let i = 4; i >= 0; i--) {
+      this.drawFrequencyBars(radius, this.colors[i], this.scales[i]);
+    } */
 
-      `rgba(0, 191, 255, 1)`,
-
-      `rgba(160, 32, 240, 1)`,
-
-      `rgba(255, 20, 147, 1)`,
-
-      `rgba(220, 210, 0, 1)`,
-    ];
-
-    for (let i = 4; i >= 0; i--) {
-      this.drawFrequencyBars(radius, colors[i], scales[i]);
-    }
+    this.drawFrequencyBars(radius, this.colors[0], this.scales[4]);
   }
 
   mainCircle(radius) {
@@ -57,16 +67,18 @@ class ReactiveBallVisualization extends AudioVisualization {
 
   frequencyBars(radius, side, color, scale) {
     let data = this.audioProcessor.getFrequencyData();
-    data = this.getLogFrequencyData(data, data.length);
-    data = this.movingAverage(data, 75);
 
-    const angleStep = Math.PI / data.length;
+    const dataLength = data.length;
 
-    for (let i = 0; i < data.length; i++) {
+    data = this.getLogFrequencyData(data, dataLength);
+    data = this.movingAverage(data, 25);
+
+    const angleStep = Math.PI / dataLength;
+
+    for (let i = 0; i < dataLength; i++) {
       const value = data[i] / 255;
 
-      const index = i < 125 ? 125 : i;
-      const attenuation = (index / data.length) ** 0.2 + 0.2;
+      const attenuation = ((i + 50) / dataLength) ** 0.2 + 0.2;
 
       const barHeight = (value * attenuation * 3) ** 4 * scale;
 
@@ -82,6 +94,7 @@ class ReactiveBallVisualization extends AudioVisualization {
 
       this.ctx.strokeStyle = color;
       this.ctx.lineWidth = 1;
+      //this.ctx.lineCap = "round";
       this.ctx.beginPath();
       this.ctx.moveTo(x, y);
       this.ctx.lineTo(xEnd, yEnd);
@@ -90,15 +103,19 @@ class ReactiveBallVisualization extends AudioVisualization {
   }
 
   movingAverage(data, windowSize) {
-    // WINDOWSIZE MUST BE ODD
-
-    // Calculate the half-window size (radius)
-    const radius = Math.floor(windowSize / 2);
     const smoothedData = [];
 
     for (let i = 0; i < data.length; i++) {
       let sum = 0;
       let count = 0;
+
+      let currentWindowSize = windowSize;
+
+      // Increase window size for lower frequencies
+      currentWindowSize = -i / data.length + 3 * windowSize + 1;
+
+      // Calculate the half-window size (radius)
+      const radius = Math.floor(currentWindowSize / 2);
 
       // Iterate through the window centered at index i
       for (let j = i - radius; j <= i + radius; j++) {
@@ -135,6 +152,62 @@ class ReactiveBallVisualization extends AudioVisualization {
     return logData;
   }
 
+  createParticles() {
+    if (this.particles.length < 150) {
+      this.particles.push({
+        x: this.CENTER_X,
+        y: this.CENTER_Y,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() - 0.5,
+        radius: Math.random() * 2 + 1,
+        color: `rgba(255, 255, 255, 1)`,
+        initialFrame: this.frameCount,
+        xToCenter: 0,
+        yToCenter: 0,
+      });
+    }
+  }
+
+  updateParticles() {
+    const audioLevel = this.audioProcessor.calculateAudioLevel();
+
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+
+      p.x = p.xToCenter + this.CENTER_X;
+      p.y = p.yToCenter + this.CENTER_Y;
+
+      if (
+        p.x > this.canvas.clientWidth ||
+        p.y > this.canvas.clientHeight ||
+        p.x < 0 ||
+        p.y < 0
+      ) {
+        this.particles.splice(i, 1);
+        i--;
+        continue;
+      }
+
+      const current_vx = p.vx * (audioLevel / 15 + 0.5);
+      const current_vy = p.vy * (audioLevel / 15 + 0.5);
+
+      p.x += current_vx;
+      p.y += current_vy;
+
+      p.xToCenter = p.x - this.CENTER_X;
+      p.yToCenter = p.y - this.CENTER_Y;
+    }
+  }
+
+  drawParticles() {
+    for (const p of this.particles) {
+      this.ctx.beginPath();
+      this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = p.color;
+      this.ctx.fill();
+    }
+  }
+
   update() {
     super.update();
   }
@@ -143,5 +216,9 @@ class ReactiveBallVisualization extends AudioVisualization {
     return super.getProperties();
   }
 
-  resetProperties() {}
+  resetProperties() {
+    this.getProperties().color = 1;
+    this.getProperties().drawGrid = false;
+    this.getProperties().gridWidth = 75;
+  }
 }

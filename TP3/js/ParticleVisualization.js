@@ -11,8 +11,10 @@ class ParticleVisualization extends AudioVisualization {
   }
 
   draw() {
-    // TODO: desenhar partículas
     this.clearCanvas();
+
+    this.CENTER_X = this.canvas.clientWidth / 2;
+    this.CENTER_Y = this.canvas.clientHeight / 2;
 
     if (this.getProperties().drawGrid) this.drawGrid();
 
@@ -21,25 +23,22 @@ class ParticleVisualization extends AudioVisualization {
   }
 
   update() {
-    // TODO: atualizar partículas
     super.update();
     this.updateParticles();
   }
 
   getProperties() {
-    // TODO: obter propriedades específicas
     return super.getProperties();
-  }
-
-  resetProperties() {
-    this.getProperties().color = 1;
   }
 
   initParticles() {
     for (let i = 0; i < 50; i++) {
+      const px = Math.random() * this.canvas.clientWidth;
+      const py = Math.random() * this.canvas.clientHeight;
+
       this.particles.push({
-        x: Math.random() * this.canvas.clientWidth,
-        y: Math.random() * this.canvas.clientHeight,
+        x: px,
+        y: py,
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2,
         radius:
@@ -51,7 +50,6 @@ class ParticleVisualization extends AudioVisualization {
   }
 
   updateParticles() {
-    // TODO: atualizar estado das partículas
     const data = this.audioProcessor
       ? this.audioProcessor.getFrequencyData()
       : this.testData;
@@ -71,6 +69,12 @@ class ParticleVisualization extends AudioVisualization {
       // Rebater nas bordas
       if (p.x < 0 || p.x > this.canvas.clientWidth) p.vx *= -1;
       if (p.y < 0 || p.y > this.canvas.clientHeight) p.vy *= -1;
+
+      // On fullscreen changes, move the particles inside the current window
+      if (p.x < 0) p.x = 1;
+      if (p.y < 0) p.y = 1;
+      if (p.x > this.canvas.clientWidth) p.x = this.canvas.clientWidth - 1;
+      if (p.y > this.canvas.clientHeight) p.y = this.canvas.clientHeight - 1;
 
       // Aplicar influência do áudio
       if (data.length > 0) {
@@ -92,7 +96,6 @@ class ParticleVisualization extends AudioVisualization {
   }
 
   drawParticles() {
-    // TODO: desenhar partículas
     for (const p of this.particles) {
       this.ctx.beginPath();
       this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -124,5 +127,11 @@ class ParticleVisualization extends AudioVisualization {
         }
       }
     }
+  }
+
+  resetProperties() {
+    this.getProperties().color = 1;
+    this.getProperties().drawGrid = false;
+    this.getProperties().gridWidth = 75;
   }
 }

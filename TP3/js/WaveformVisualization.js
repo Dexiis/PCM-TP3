@@ -44,5 +44,7 @@ class WaveformVisualization extends AudioVisualization {
 
   resetProperties() {
     this.getProperties().lineWidth = 4;
+    this.getProperties().drawGrid = false;
+    this.getProperties().gridWidth = 75;
   }
 }

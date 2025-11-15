@@ -34,5 +34,7 @@ class SpectrumVisualization extends AudioVisualization {
 
   resetProperties() {
     this.getProperties().color = 1;
+    this.getProperties().drawGrid = false;
+    this.getProperties().gridWidth = 75;
   }
 }
