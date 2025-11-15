@@ -23,7 +23,7 @@ class AudioProcessor {
 
           const mediaSource = this.audioContext.createMediaStreamSource(stream);
           mediaSource.connect(this.analyser);
-          // Ativar para ouvir input
+          // REMOVE COMMENT TO HEAR INPUT
           //this.analyser.connect(this.audioContext.destination);
           this.mediaStream = stream;
           resolve("Microfone ativado com sucesso");
@@ -81,7 +81,7 @@ class AudioProcessor {
 
   setupAnalyser() {
     this.analyser = this.audioContext.createAnalyser();
-    this.analyser.fftSize = 4096;
+    this.analyser.fftSize = 2048;
     this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
     this.waveformData = new Uint8Array(this.analyser.frequencyBinCount);
   }
@@ -94,7 +94,7 @@ class AudioProcessor {
 
     if (this.audioContext) this.audioContext.suspend();
 
-    this.app.updateUIInfo();
+    this.updateUI();
 
     console.log("Parando processamento de áudio...");
   }
@@ -124,7 +124,7 @@ class AudioProcessor {
   }
 
   calculateAudioLevel() {
-    // RMS of the samples in the whole array of waveform
+    // RMS of the samples in the whole array of the waveform data
     let waveform = this.getWaveformData();
     let sumSquares = 0;
     for (let sample of waveform) {

@@ -68,6 +68,7 @@ class App {
     this.uiManager.clearPropertyControls();
     if (this.visualizationEngine.setVisualization(type)) {
       console.log(`Definindo visualização: ${type}`);
+      // Displays the current visualizations properties handlers
       this.uiManager.updatePropertiesPanel(type);
     } else {
       this.uiManager.showError(
@@ -86,7 +87,10 @@ class App {
 
   updateUIInfo() {
     let info = {
-      level: parseInt(this.audioProcessor.calculateAudioLevel()),
+      // Puts the volume level on the label at 0 when the visualization ends
+      level: this.visualizationEngine.isRunning
+        ? parseInt(this.audioProcessor.calculateAudioLevel())
+        : 0,
       status: this.visualizationEngine.isRunning ? "Ativo" : "Parado",
     };
     this.uiManager.updateAudioInfo(info, false);
