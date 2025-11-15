@@ -5,19 +5,6 @@ class ReactiveBallVisualization extends AudioVisualization {
 
     this.particles = [];
 
-    this.scales = [0.8, 0.85, 0.9, 1, 1.15];
-    this.colors = [
-      `rgba(255, 255, 255, 1)`,
-
-      `rgba(0, 191, 255, 1)`,
-
-      `rgba(255, 32, 40, 1)`,
-
-      `rgba(255, 250, 17, 1)`,
-
-      `rgba(15, 210, 0, 1)`,
-    ];
-
     this.LEFT = true;
     this.RIGHT = false;
 
@@ -44,11 +31,9 @@ class ReactiveBallVisualization extends AudioVisualization {
 
     this.mainCircle(radius);
 
-    /* for (let i = 4; i >= 0; i--) {
-      this.drawFrequencyBars(radius, this.colors[i], this.scales[i]);
-    } */
+    const scale = this.canvas.clientHeight / 300;
 
-    this.drawFrequencyBars(radius, this.colors[0], this.scales[4]);
+    this.drawFrequencyBars(radius, `rgba(255, 255, 255, 1)`, scale);
   }
 
   mainCircle(radius) {
